@@ -57,6 +57,7 @@ for code in enabled_language_codes:
 # Borrowed from superset/docker/pythonpath_dev/superset_config.py
 REDIS_HOST = "{{ REDIS_HOST }}"
 REDIS_PORT = "{{ REDIS_PORT }}"
+REDIS_TRANSPORT = "{{ REDIS_TRANSPORT }}"
 # Be careful not to conflict with Open edX here
 REDIS_CELERY_DB = {{ OPENEDX_CELERY_REDIS_DB + 2 }}
 REDIS_CACHE_DB = {{ OPENEDX_CACHE_REDIS_DB + 2 }}
@@ -66,7 +67,7 @@ CACHE_CONFIG = {
     "CACHE_TYPE": "redis",
     "CACHE_DEFAULT_TIMEOUT": 60 * 60 * 24 * 1,  # 1 day default (in secs)
     "CACHE_KEY_PREFIX": "superset_data_cache",
-    "CACHE_REDIS_URL": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CACHE_DB}",
+    "CACHE_REDIS_URL": f"{REDIS_TRANSPORT}://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CACHE_DB}",
 }
 DATA_CACHE_CONFIG = CACHE_CONFIG.copy()
 FILTER_STATE_CACHE_CONFIG = CACHE_CONFIG.copy()
@@ -127,7 +128,7 @@ AUTH_USER_REGISTRATION = True
 {% endif %}
 
 class CeleryConfig:
-    BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}"
+    BROKER_URL = f"{REDIS_TRANSPORT}://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}"
     CELERY_IMPORTS = ("superset.sql_lab", "superset.tasks","superset.tasks.thumbnails",)
     CELERYD_LOG_LEVEL = "DEBUG"
     CELERYD_PREFETCH_MULTIPLIER = 1
